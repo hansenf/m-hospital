@@ -42,14 +42,15 @@ func getInventory(w http.ResponseWriter, r *http.Request) {
 }
 
 //Function menambahkan Item baru
-func createItem(w http.ResponseWriter, r *http.Request ) {
+func createItem (w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
-		var item Item 
-		_ = json.NewDecoder(r.Body).Decode(&item)
+	var item Item 
+	
+	_ = json.NewDecoder(r.Body).Decode(&item)
 
-		inventory = append(inventory, item)
+	inventory = append(inventory, item)
 
-		json.NewEncoder(w).Encode(item)
+	json.NewEncoder(w).Encode(item)
 }
 
 //Memanggil page http port :8000
