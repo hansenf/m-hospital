@@ -41,14 +41,24 @@ func getInventory(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(inventory)
 }
 
+//Function menambahkan Item baru
+func createItem(w http.ResponseWriter, r *http.Request ) {
+	w.Header().Set("Content-type", "application/json")
+		var item Item 
+		_ = json.NewDecoder(r.Body).Decode(&item)
+
+		inventory = append(inventory, item)
+
+		json.NewEncoder(w).Encode(item)
+}
+
 //Memanggil page http port :8000
 func handlerRequest() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", homePage).Methods("GET")
-
 	router.HandleFunc("/inventory",getInventory).Methods("GET")
-	
+	router.HandleFunc("/inventory",createItem).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
