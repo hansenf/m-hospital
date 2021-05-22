@@ -33,6 +33,45 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Endpoint called: homePage()")
 }
 
+//Function delete Item
+func deleteItem(w http.ResponseWriter, r *http.Request){
+	w.Header().Set("Content-type", "application/json")
+
+	params := mux.Vars(r)
+
+	_deleteItemAtUid(params["uid"])
+
+	json.NewEncoder(w).Encode(inventory)
+}
+
+//Function delete Item by UID
+func _deleteItemAtUid(uid string) {
+	for index, item := range inventory {
+		if item.UID == uid {
+			//Delete item from slice
+			inventory = append(inventory[:index], inventory[index+1:]...)
+			break
+		}
+	}
+}
+
+//Function update Item
+func updateItem(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+
+	var item Item
+	_ = json.NewDecoder(r.Body).Decode(&item)
+
+	params := mux.Vars(r)
+	//Delete the item at UID
+	_deleteItemAtUid(params["uid"])
+	//Create it with new data
+	inventory = append(inventory, item)
+
+	json.NewEncoder(w).Encode(inventory)
+
+}
+
 //Function get Inventory
 func getInventory(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
@@ -58,8 +97,11 @@ func handlerRequest() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", homePage).Methods("GET")
-	router.HandleFunc("/inventory",getInventory).Methods("GET")
-	router.HandleFunc("/inventory",createItem).Methods("POST")
+	router.HandleFunc("/inventory", createItem).Methods("POST")
+	router.HandleFunc("/inventory", getInventory).Methods("GET")
+	router.HandleFunc("/inventory/{uid}", deleteItem).Methods("DELETE")
+	router.HandleFunc("/inventory/{uid}", updateItem).Methods("PUT")
+	
 	log.Fatal(http.ListenAndServe(":8000", router))
 }
 
