@@ -56,9 +56,16 @@ func handlerRequest() {
 func main() {
 	inventory = append(inventory, Item{
 		UID: "0",
-		Name: "Cheese",
-		Desc: "A fine block of cheese",
-		Price: 4.99,
+		Name: "Bodrex",
+		Desc: "A fine medicine of headache, flu, and cough.",
+		Price: 3000,
+	})
+
+	inventory = append(inventory, Item{
+		UID: "1",
+		Name: "Daktarin",
+		Desc: "Anti fungiderm, clean up your skin.",
+		Price: 7500,
 	})
 
 	handlerRequest()
